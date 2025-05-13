@@ -11,18 +11,18 @@ class Augmentor:
         """
 
     @staticmethod
-    def abtest_transform(clf):
-        """
-        Given exp data, get sample mean and variance.
-        Used when mode = no enhancement
-        """
-
-    @staticmethod
     def cuped_transform(data, X, success_metrics, group_col):
         """
         Given intra and pre exp data,
         returns cuped transformed success metrics
         Used when mode = cuped
+
+        input:
+            - data: df containing X, success_metrics, and group_col
+            - X: pre exp col
+            - success_metrics: metrics col
+        output:
+            - transformed_data with success_metric
         """
 
         transformed_data = data[[group_col]]
@@ -92,11 +92,16 @@ class Stats:
 
             before_var = data[success_metric].var()
             after_var = transformed_data[success_metric].var()
-            var_reduction = after_var / before_var
+            var_reduction_ratio = (
+                (before_var - after_var) / before_var if before_var > 0 else None
+            )
 
             overall_results[success_metric] = {
                 "Mean": {"treatment": means["treatment"], "control": means["control"]},
-                "Variance": {"treatment": vars["treatment"], "control": vars["control"]},
+                "Variance": {
+                    "treatment": vars["treatment"],
+                    "control": vars["control"],
+                },
                 "Uplift": {"pcnt": uplift_pct, "absolute": uplift_abs},
                 "Significance": {
                     "p-value": ttest.pvalue,
@@ -107,7 +112,7 @@ class Stats:
                 "Variance reduction": {
                     "before": before_var,
                     "after": after_var,
-                    "reduction": var_reduction,
+                    "reduction_ratio": var_reduction_ratio,
                 },
                 "Skewness": {},
             }

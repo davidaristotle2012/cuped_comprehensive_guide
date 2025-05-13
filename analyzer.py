@@ -12,7 +12,7 @@ class ABTestAnalyzer:
 
     def analyze(
         data: pd.DataFrame,
-        success_metrics: List[str] = None,
+        success_metrics: List[str],
         group_col: str = "group",
         customer_segments: Optional[List[str]] = None,
         mode: str = "cuped",
@@ -24,9 +24,13 @@ class ABTestAnalyzer:
                 data, X, success_metrics, group_col
             )
 
+        elif mode == "abtest":
+            transformed_data = data
+
+
         return Stats.obtain_group_stats(
             data, success_metrics, group_col, transformed_data
-        )
+        ) #This
 
     def summary():
         """show results like R"""
