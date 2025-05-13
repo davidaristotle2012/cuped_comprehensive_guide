@@ -8,9 +8,11 @@ from calculators import Augmentor, Stats
 class ABTestAnalyzer:
 
     def __init__(self):
+        self.raw_results = {}
         return
 
     def analyze(
+        self,
         data: pd.DataFrame,
         success_metrics: List[str],
         group_col: str = "group",
@@ -27,11 +29,15 @@ class ABTestAnalyzer:
         elif mode == "abtest":
             transformed_data = data
 
-
-        return Stats.obtain_group_stats(
+        group_stats = Stats.obtain_group_stats(
             data, success_metrics, group_col, transformed_data
-        ) #This
+        )
+        # Add results of analysis to all results.
+        analysis_number = len(self.raw_results) + 1
+        self.raw_results.append({f"analysis_{analysis_number}": group_stats})
 
-    def summary():
+    def summary(self):
         """show results like R"""
+        for analysis in self.raw_results:
+            print(analysis)
         return 1
